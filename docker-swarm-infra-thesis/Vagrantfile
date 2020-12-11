@@ -21,7 +21,7 @@ $manager_script = <<SCRIPT
 echo Swarm Init...
 sudo docker swarm init --listen-addr #{MANAGER_IP}:2377 --advertise-addr #{MANAGER_IP}:2377
 sudo docker swarm join-token --quiet worker > /vagrant/worker_token
-sudo sed -i 's/^ExecStart.*/& -H tcp:\/\/0.0.0.0:2375/' /lib/systemd/system/docker.service
+sudo sed -i 's/^ExecStart.*/& -H tcp:\\/\\/0.0.0.0:2375/' /lib/systemd/system/docker.service
 sudo systemctl daemon-reload
 sudo systemctl restart docker
 SCRIPT
@@ -30,7 +30,7 @@ $traefik_manager = <<SCRIPT
 
 docker network create --driver=overlay traefik-net
 
-docker service create \
+docker service create -d    \
     --name traefik \
     --constraint=node.role==manager \
     --publish 80:80 --publish 8080:8080 \
@@ -51,9 +51,10 @@ docker service create \
 SCRIPT
 
 $example_test = <<SCRIPT
-mkdir -p nfs/validation
-mkdir -p nfs/students/alice/programming2
-cat > /home/vagrant/nfs/validation/solve_me.h EOF<<
+mkdir -p /home/vagrant/nfs/validation
+mkdir -p /home/vagrant/nfs/students/alice/programming2
+
+cat > /home/vagrant/nfs/validation/solve_me.h <<EOF
 #ifndef __SOLVE_ME_H__
 #define __SOLVE_ME_H__
 
@@ -62,7 +63,7 @@ int bigger(int a, int b);
 #endif
 EOF
 
-cat > /home/vagrant/nfs/validation/validate.c EOF<<
+cat > /home/vagrant/nfs/validation/validate.c <<EOF
 #include <stdio.h>
 #include "solve_me.h"
 
@@ -77,7 +78,7 @@ int main() {
 }
 EOF
 
-cat > /home/vagrant/nfs/alice/programming2/solve_me.c EOF<<
+cat > /home/vagrant/nfs/students/alice/programming2/solve_me.c <<EOF
 #include "solve_me.h"
 // Do not delete the line above
 
@@ -85,6 +86,10 @@ int bigger(int a, int b) {
     return a > b ? a : b;
 }
 EOF
+
+sudo chmod +rwx /home/vagrant/nfs/validation/validate.c
+sudo chmod +rwx /home/vagrant/nfs/validation/solve_me.h
+sudo chmod +rwx /home/vagrant/nfs/students/alice/programming2/solve_me.c
 
 SCRIPT
 
