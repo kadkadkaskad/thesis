@@ -1,0 +1,40 @@
+version: "3"
+services:
+
+# LDAP
+  ldap_server:
+    image: osixia/openldap:1.3.0
+    ports:
+      - 389:389
+      - 639:639
+    environment: 
+      LDAP_ADMIN_PASSWORD: "QWeasd123%QWEasd123%"
+
+  ldap-seed:
+    image: osixia/openldap:1.3.0
+    volumes: 
+      - ./ldap_seed:/data/ldif
+    entrypoint: 
+      - /data/ldif/addAll.sh
+    depends_on: 
+      - ldap_server
+
+# # SQL SERVER
+#   db:
+#     image: mcr.microsoft.com/mssql/server:2017-latest
+#     environment:
+#         SA_PASSWORD: "QWEasd123%QWEasd123%"
+#         ACCEPT_EULA: "Y"
+#     ports: 
+#       - 1433:1433
+# # API
+#   api:
+#     build: FlagHunter.Api/FlagHunter.Api
+#     ports:
+#       - 8000:80
+#     depends_on: 
+#       - db
+    
+
+
+# WEB APP

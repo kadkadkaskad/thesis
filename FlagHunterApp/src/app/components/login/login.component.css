@@ -1,0 +1,10 @@
+.wrapper {
+    max-width: 500px;
+    margin: auto;
+    position: relative;
+    margin-top: 10%;
+}
+
+.title {
+    margin-bottom: 3rem;
+}

@@ -1,0 +1,20 @@
+.details-header {
+    padding: 2rem;
+    font-family: 'Poppins', sans-serif;
+    color: white;
+}
+
+.box{
+    font-family: 'Poppins', sans-serif;
+    min-width: 15rem;
+    padding: 2rem 3rem;
+    background: #FFF;
+    border-radius: 10px; 
+    align-items: center;
+    /* transition: all 0.25s ease-out; */
+}
+
+.env-button {
+    font-size: 14px;
+    margin: 0.5rem;
+}

@@ -1,0 +1,3 @@
+<app-student-header *ngIf="currentUser.role == 'Student'" userName="{{currentUser.username}}"></app-student-header>
+<app-teacher-header *ngIf="currentUser.role == 'Teacher'"></app-teacher-header>
+<p>home works!</p>

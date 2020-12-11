@@ -1,0 +1,36 @@
+<app-student-header *ngIf="currentUser.role == 'Student'" userName="{{currentUser.username}}"></app-student-header>
+<!-- <app-teacher-header *ngIf="currentUser.role == 'Teacher'"></app-teacher-header> -->
+
+<div class="container">
+    <div class="row details-header">
+        <div class="col text-center">
+            <h1>C basics</h1>
+        </div>
+    </div>
+    <div class="row details-body align-items-center">
+        <div class="col-md-6 box mx-auto">
+            <h4>Description:</h4>
+            <span>In the bigger function implement a logic that it will return the bigger integer number from the parameters</span>
+        </div>
+        <div class="col-md-4 box mx-auto text-center">
+            <button *ngIf="!this.environmentId" (click)="startEnvironment()" type="button" class="btn btn-success">
+                <span *ngIf="!this.loading">Start environment</span>
+                <div *ngIf="this.loading" class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </button>
+            <div *ngIf="this.environmentId" class="">
+                <h4>Your environment is ready!</h4>
+                <button (click)="accessEnvironment()" type="button" class="btn btn-success env-button">
+                    Environment
+                </button>
+                <button type="button" class="btn btn-success btn-dark env-button">
+                    Check solution
+                </button>
+                <button (click)="stopEnvironment()" type="button" class="btn btn-success btn-danger env-button">
+                    Stop environment
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

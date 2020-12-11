@@ -1,0 +1,127 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+BOX_NAME = "ubuntu/xenial64"
+MEMORY = "1024"
+CPUS = 1
+MANAGERS = 1
+MANAGER_IP = "172.16.0.100"
+WORKERS = 1
+VAGRANTFILE_API_VERSION = "2"
+
+$install_docker_script = <<SCRIPT
+echo "Installing dependencies ..."
+sudo apt-get update
+echo Installing Docker...
+curl -sSL https://get.docker.com/ | sh
+sudo usermod -aG docker vagrant
+SCRIPT
+
+$manager_script = <<SCRIPT
+echo Swarm Init...
+sudo docker swarm init --listen-addr #{MANAGER_IP}:2377 --advertise-addr #{MANAGER_IP}:2377
+sudo docker swarm join-token --quiet worker > /vagrant/worker_token
+sudo sed -i 's/^ExecStart.*/& -H tcp:\/\/0.0.0.0:2375/' /lib/systemd/system/docker.service
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+SCRIPT
+
+$traefik_manager = <<SCRIPT
+
+docker network create --driver=overlay traefik-net
+
+docker service create \
+    --name traefik \
+    --constraint=node.role==manager \
+    --publish 80:80 --publish 8080:8080 \
+    --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
+    --network traefik-net \
+    traefik:1.7-alpine \
+    --docker \
+    --docker.swarmMode \
+    --docker.domain=traefik \
+    --docker.watch \
+    --docker.swarmModeRefreshSeconds=1 \
+    --logLevel="DEBUG" \
+    --traefikLog.filePath="/var/log/traefik/traefik.log" \
+    --traefikLog.format="json" \
+    --accessLog.filePath="/var/log/traefik/access.log" \
+    --accessLog.format="json" \
+    --api
+SCRIPT
+
+$example_test = <<SCRIPT
+mkdir -p nfs/validation
+mkdir -p nfs/students/alice/programming2
+cat > /home/vagrant/nfs/validation/solve_me.h EOF<<
+#ifndef __SOLVE_ME_H__
+#define __SOLVE_ME_H__
+
+int bigger(int a, int b);
+
+#endif
+EOF
+
+cat > /home/vagrant/nfs/validation/validate.c EOF<<
+#include <stdio.h>
+#include "solve_me.h"
+
+int main() {
+    if (bigger(2,8) == 8) {
+        printf("Nice");
+        fprintf(stdout, "Passed");
+        return 0;
+    }
+    fprintf(stderr, "Failed");
+    return 1;
+}
+EOF
+
+cat > /home/vagrant/nfs/alice/programming2/solve_me.c EOF<<
+#include "solve_me.h"
+// Do not delete the line above
+
+int bigger(int a, int b) {
+    return a > b ? a : b;
+}
+EOF
+
+SCRIPT
+
+$worker_script = <<SCRIPT
+echo Swarm Join...
+sudo docker swarm join --token $(cat /vagrant/worker_token) #{MANAGER_IP}:2377
+SCRIPT
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+    #Common setup
+    config.vm.box = BOX_NAME
+    config.vm.synced_folder "swarm_files", "/vagrant"
+    config.vm.provision "shell",inline: $install_docker_script, privileged: true
+    config.vm.provider "virtualbox" do |vb|
+      vb.memory = MEMORY
+      vb.cpus = CPUS
+    end
+
+    #Setup manager node
+    config.vm.define "manager" do |manager|
+        manager.vm.network :private_network, ip: "#{MANAGER_IP}"
+        manager.vm.hostname = "manager"
+        manager.vm.network :forwarded_port, guest: 8080, host: 8080
+        # manager.vm.network :forwarded_port, guest: 5000, host: 5000
+        manager.vm.provision "shell", inline: $manager_script, privileged: true
+        manager.vm.provision "shell", inline: $traefik_manager, privileged: true
+        manager.vm.provision "shell", inline: $example_test, privileged: true
+        
+    end
+
+    #Setup Woker Nodes
+    (1..WORKERS).each do |i|
+        config.vm.define "worker0#{i}" do |worker|
+            worker.vm.network :private_network, ip: "172.16.0.10#{i}"
+            worker.vm.hostname = "worker0#{i}"
+            worker.vm.provision "shell", inline: $worker_script, privileged: true
+            worker.vm.provision "shell", inline: $example_test, privileged: true
+        end
+    end
+end

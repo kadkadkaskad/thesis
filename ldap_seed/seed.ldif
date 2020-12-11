@@ -1,0 +1,83 @@
+dn: cn=teachers,dc=example,dc=org
+objectClass: top
+objectClass: posixGroup
+gidNumber: 3001
+
+dn: cn=students,dc=example,dc=org
+objectClass: top
+objectClass: posixGroup
+gidNumber: 3002
+# Password for all entries: secretpassword
+# The usernames are just the first names for the sake of the thesis.
+
+# TEACHERS
+dn: cn=David Sanders,cn=students,dc=example,dc=org
+cn: David Sanders
+givenName: David
+sn: Sanders
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: top
+loginShell: /bin/bash
+uid: david
+uidNumber: 4001
+gidNumber: 3001
+homeDirectory: /home/dsanders
+userpassword: {CRYPT}$5$nnbRXPGH$wG8TstYPTQoWVa9qU9ws/F.7zTZN.VviqKADK50PMS.
+
+dn: cn=Eva Morgan,cn=students,dc=example,dc=org
+cn: Eva Morgan
+givenName: Eva
+sn: Morgan
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: top
+loginShell: /bin/bash
+uid: eva
+uidNumber: 4001
+gidNumber: 3001
+homeDirectory: /home/dsanders
+userpassword: {CRYPT}$5$nnbRXPGH$wG8TstYPTQoWVa9qU9ws/F.7zTZN.VviqKADK50PMS.
+
+# STUDENTS
+dn: cn=Alice Thompson,cn=students,dc=example,dc=org
+cn: Alice Thompson
+givenName: Alice
+sn: Thompson
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: top
+loginShell: /bin/bash
+uid: alice
+uidNumber: 4001
+gidNumber: 3002
+homeDirectory: /home/athompson
+userpassword: {CRYPT}$5$nnbRXPGH$wG8TstYPTQoWVa9qU9ws/F.7zTZN.VviqKADK50PMS.
+
+dn: cn=Bob Ross,cn=students,dc=example,dc=org
+cn: Bob Ross
+givenName: Bob
+sn: Ross
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: top
+loginShell: /bin/bash
+uid: bob
+uidNumber: 4002
+gidNumber: 3002
+homeDirectory: /home/bross
+userpassword: {CRYPT}$5$nnbRXPGH$wG8TstYPTQoWVa9qU9ws/F.7zTZN.VviqKADK50PMS.
+
+dn: cn=Carol Smith,cn=students,dc=example,dc=org
+cn: Carol Smith
+givenName: Carol
+sn: Smith
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: top
+loginShell: /bin/bash
+uid: carol
+uidNumber: 4003
+gidNumber: 3002
+homeDirectory: /home/csmith
+userpassword: {CRYPT}$5$nnbRXPGH$wG8TstYPTQoWVa9qU9ws/F.7zTZN.VviqKADK50PMS.
