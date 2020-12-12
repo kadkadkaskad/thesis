@@ -60,10 +60,6 @@ docker service create -d    \
 SCRIPT
 
 $example_test = <<SCRIPT
-<<<<<<< HEAD
-
-=======
->>>>>>> f9e98f0e6fc77dc62ee4287a48716577044b9fae
 mkdir -p /home/vagrant/nfs/validation
 mkdir -p /home/vagrant/nfs/students/alice/programming2
 
