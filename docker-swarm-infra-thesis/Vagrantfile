@@ -21,10 +21,7 @@ $manager_script = <<SCRIPT
 echo Swarm Init...
 sudo docker swarm init --listen-addr #{MANAGER_IP}:2377 --advertise-addr #{MANAGER_IP}:2377
 sudo docker swarm join-token --quiet worker > /vagrant/worker_token
-<<<<<<< HEAD
 echo Publish Docker over TCP...
-=======
->>>>>>> f9e98f0e6fc77dc62ee4287a48716577044b9fae
 sudo sed -i 's/^ExecStart.*/& -H tcp:\\/\\/0.0.0.0:2375/' /lib/systemd/system/docker.service
 sudo systemctl daemon-reload
 sudo systemctl restart docker
@@ -34,12 +31,8 @@ $traefik_manager = <<SCRIPT
 echo Creating overlay network for traefik...
 docker network create --driver=overlay traefik-net
 
-<<<<<<< HEAD
 echo Starting traefik proxy on the manager node...
 docker service create -d \
-=======
-docker service create -d    \
->>>>>>> f9e98f0e6fc77dc62ee4287a48716577044b9fae
     --name traefik \
     --constraint=node.role==manager \
     --publish 80:80 --publish 8080:8080 \
