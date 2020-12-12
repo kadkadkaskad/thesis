@@ -16,12 +16,21 @@ export class TestService {
     return this.http.get<Test>(`${environment.apiUrl}/Test/`+ id)
   }
 
+  getTestDetailsById(testId: string) {
+    return this.http.get<Test>(`${environment.apiUrl}/Test/`+ testId);
+  }
+
   startTest(id: string) {
     return this.http.get(`${environment.apiUrl}/Test/` + id + `/Start`, {responseType: 'text'})
   }
 
   stopTest(testId: string) {
     return this.http.get<boolean>(`${environment.apiUrl}/Test/` + testId + `/Stop`);
+  }
+
+  validateCTest(testId: string) {
+    console.log(testId)
+    return this.http.get<boolean>(`${environment.apiUrl}/Test/` + testId + `/ValidateCTest`);
   }
   
   getEnvironment(testId: string) {

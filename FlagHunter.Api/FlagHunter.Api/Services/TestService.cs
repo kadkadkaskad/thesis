@@ -36,9 +36,16 @@ namespace FlagHunter.Api.Services
             return await _context.Tests.Where(x => x.Id == testId).FirstOrDefaultAsync();
         }
 
-        public bool ValidateBashScriptTest()
+        public async Task<StudentTest> GetStudentTestByIds(Guid studentId, Guid testId)
         {
-            throw new NotImplementedException();
+            return await _context.StudentTests.Where(x => x.StudentId == studentId && x.TestId == testId).FirstOrDefaultAsync();
         }
+
+        public async Task Save()
+        {
+            await _context.SaveChangesAsync();
+        }
+
+
     }
 }

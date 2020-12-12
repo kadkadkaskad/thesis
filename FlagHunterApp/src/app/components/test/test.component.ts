@@ -18,6 +18,8 @@ export class TestComponent implements OnInit {
   
   environmentId: string;
 
+  testSolved: boolean = false;
+
   test: Test;
   testId: string;
   
@@ -50,6 +52,17 @@ export class TestComponent implements OnInit {
     this.testService.startTest(this.testId).pipe(first()).subscribe( envId => {
       this.loading = false;
       this.environmentId = envId;
+    });
+  }
+
+  validateCTest() {
+    this.loading = true;
+    this.testService.validateCTest(this.testId).subscribe( res => {
+      this.loading = false;
+      this.testSolved = res;
+      if(this.testSolved){
+        this.environmentId = "";
+      }
     });
   }
 

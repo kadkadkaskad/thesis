@@ -82,5 +82,16 @@ namespace FlagHunter.Api.Services
             return false;
         }
 
+        public async Task<bool> ValidateCTest() 
+        {
+            var res = await _client.GetAsync("/api/ValidateCTest");
+            if (res.IsSuccessStatusCode)
+            {
+                var content = await res.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<bool>(content);
+            }
+            return false;
+        }
+
     }
 }

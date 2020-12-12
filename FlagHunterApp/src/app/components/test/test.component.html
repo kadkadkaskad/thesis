@@ -5,12 +5,14 @@
     <div class="row details-header">
         <div class="col text-center">
             <h1>C basics</h1>
+            <h2 *ngIf="this.testSolved">(Solved)</h2>
         </div>
     </div>
     <div class="row details-body align-items-center">
         <div class="col-md-6 box mx-auto">
             <h4>Description:</h4>
-            <span>In the bigger function implement a logic that it will return the bigger integer number from the parameters</span>
+            <span>In the bigger function implement a logic that it will return the bigger integer number from the
+                parameters</span>
         </div>
         <div class="col-md-4 box mx-auto text-center">
             <button *ngIf="!this.environmentId" (click)="startEnvironment()" type="button" class="btn btn-success">
@@ -24,8 +26,11 @@
                 <button (click)="accessEnvironment()" type="button" class="btn btn-success env-button">
                     Environment
                 </button>
-                <button type="button" class="btn btn-success btn-dark env-button">
-                    Check solution
+                <button (click)="validateCTest()" type="button" class="btn btn-success btn-dark env-button">
+                    <span *ngIf="!this.loading">Validate</span>
+                    <div *ngIf="this.loading" class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
                 </button>
                 <button (click)="stopEnvironment()" type="button" class="btn btn-success btn-danger env-button">
                     Stop environment

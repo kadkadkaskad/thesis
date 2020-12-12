@@ -19,12 +19,14 @@ namespace FlagHunter.Api.Controllers
         private readonly ITestService _testService;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public TestController(IDockerService dockerService, ITestService testService, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        private readonly FlagHunterDbContext _context;
+        public TestController(IDockerService dockerService, ITestService testService, IMapper mapper, IHttpContextAccessor httpContextAccessor, FlagHunterDbContext context)
         {
             _httpContextAccessor = httpContextAccessor;
             _dockerService = dockerService;
             _testService = testService;
             _mapper = mapper;
+            _context = context;
         }
 
         [HttpGet("ListServices")]
@@ -65,7 +67,20 @@ namespace FlagHunter.Api.Controllers
             
             return await _dockerService.GetServiceByIds(currentUserGuid, testId);
         }
-        
+        [HttpGet("{testId}/ValidateCTest")]
+        public async Task<bool> ValidateCTest(string testId)
+        {
+            var currentUserGuid = new Guid(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var studentTest = await _testService.GetStudentTestByIds(currentUserGuid, new Guid(testId));
+            var passed = await _dockerService.ValidateCTest();
+
+            if (passed)
+            {
+                studentTest.Solved = true;
+                await _context.SaveChangesAsync();
+            }
+            return passed;
+        }
 
         [HttpGet("{id}")]
         public async Task<TestDto> GetTestDetails(Guid id)

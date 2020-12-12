@@ -14,5 +14,6 @@ namespace FlagHunter.Api.Services.Interfaces
         Task<string> StartService(Guid studentId, Guid testId, string imageId, string port);
         Task<bool> StopService(string serviceId);
         Task<string> GetServiceByIds(Guid studentId, Guid testId);
+        Task<bool> ValidateCTest();
     }
 }
